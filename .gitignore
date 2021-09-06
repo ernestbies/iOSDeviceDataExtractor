@@ -1,0 +1,13 @@
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+build/classes
+build/classes-generated
+build/cluster
+build/depcache
+build/public-package-jars
+build/testuserdir
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
