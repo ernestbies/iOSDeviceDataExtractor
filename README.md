@@ -44,7 +44,7 @@ Uninstallation:
 3. Choose whether you want to back up your device or extract files from a backup.
 4. For an encrypted backup, enter the password.
 5. You can extract the files from the backup to a ZIP archive to use for example iLEAPP module. 
-6. Case Study: 
+6. Case Study: https://youtu.be/CrBmTBpnK5c
 
 For use in Linux install libimobiledevice form https://libimobiledevice.org/#get-started
 if there is a problem with iOS 14 devices, you can use the script from 
