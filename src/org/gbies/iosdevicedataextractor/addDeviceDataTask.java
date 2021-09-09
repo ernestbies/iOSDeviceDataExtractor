@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * iOS Device Data Extractor Autopsy Module, version  1.0
+ * iOS Device Data Extractor (Autopsy module), version  1.0
  *
  */
 
-package org.gbies.iosdeviceextractor;
+package org.gbies.iosdevicedataextractor;
 
 import java.io.File;
 import java.io.FileNotFoundException;

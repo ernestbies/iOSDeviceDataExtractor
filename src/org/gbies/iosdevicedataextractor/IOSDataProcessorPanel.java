@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * iOS Device Data Extractor Autopsy Module, version  1.0
+ * iOS Device Data Extractor (Autopsy module), version  1.0
  *
  */
-package org.gbies.iosdeviceextractor;
+package org.gbies.iosdevicedataextractor;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -26,14 +26,14 @@ import javax.swing.JFileChooser;
 import org.openide.util.NbBundle.Messages;
 import org.sleuthkit.autopsy.casemodule.Case;
 import org.sleuthkit.autopsy.coreutils.MessageNotifyUtil;
-import static org.gbies.iosdeviceextractor.addDeviceDataTask.logger;
+import static org.gbies.iosdevicedataextractor.addDeviceDataTask.logger;
 
 /**
  * Allows examiner to supply iOS device or backup data source.
  */
 @Messages({
     "DeviceDataProcessorPanel.moduleErrorMessage.title=Module Error",
-    "DeviceDataProcessorPanel.moduleErrorMessage.body=A module caused an error listening to DeviceDataProcessorPanel updates.",})
+    "DeviceDataProcessorPanel.moduleErrorMessage.body=A module caused an error listening to DeviceDataProcessorPanel updates."})
 public class IOSDataProcessorPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;

@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * iOS Device Data Extractor Autopsy Module, version  1.0
+ * iOS Device Data Extractor (Autopsy module), version  1.0
  *
  */
-package org.gbies.iosdeviceextractor;
+package org.gbies.iosdevicedataextractor;
 
 import javax.swing.JPanel;
 import org.sleuthkit.autopsy.corecomponentinterfaces.DataSourceProcessor;

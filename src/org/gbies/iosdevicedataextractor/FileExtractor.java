@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * iOS Device Data Extractor Autopsy Module, version  1.0
+ * iOS Device Data Extractor (Autopsy module), version  1.0
  *
  */
-package org.gbies.iosdeviceextractor;
+package org.gbies.iosdevicedataextractor;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -61,7 +61,7 @@ public class FileExtractor {
     public void extractToFile(File destinationFile) throws FileNotFoundException, BackupReadException, NotUnlockedException, UnsupportedCryptoException, IOException {
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile); 
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream)) {
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream)) {
             
             BufferedInputStream bufferedInputStream = backupFile.getFileStream();
             bufferedOutputStream.flush();

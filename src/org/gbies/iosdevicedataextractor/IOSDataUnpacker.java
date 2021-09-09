@@ -15,11 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * iOS Device Data Extractor Autopsy Module, version  1.0
+ * iOS Device Data Extractor (Autopsy module), version  1.0
  *
  */
-
-package org.gbies.iosdeviceextractor;
+package org.gbies.iosdevicedataextractor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -41,7 +40,7 @@ import org.gbies.iosbackupextractor.BackupReadException;
 import org.gbies.iosbackupextractor.ITunesBackup;
 import org.gbies.iosbackupextractor.NotUnlockedException;
 import org.gbies.iosbackupextractor.UnsupportedCryptoException;
-import static org.gbies.iosdeviceextractor.addDeviceDataTask.logger;
+import static org.gbies.iosdevicedataextractor.addDeviceDataTask.logger;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Exceptions;
 
@@ -51,7 +50,7 @@ import org.openide.util.Exceptions;
 public class IOSDataUnpacker {
 
     private final File filesCommandPath;
-    private final ByteArrayOutputStream outputStream;    
+    private final ByteArrayOutputStream outputStream;
     private boolean processing;
     private String backupInfo;
     private String deviceInfo;
@@ -62,14 +61,14 @@ public class IOSDataUnpacker {
     private File backupDirectory;
     private File extractDirectory;
     private int backupExtractPercent;
-    private final Pattern pattern;    
+    private final Pattern pattern;
 
     /**
      * Main constructor.
      *
      */
-    public IOSDataUnpacker() {        
-        this.filesCommandPath = getFilesCommandPath();        
+    public IOSDataUnpacker() {
+        this.filesCommandPath = getFilesCommandPath();
         this.outputStream = new ByteArrayOutputStream();
         this.pattern = Pattern.compile("(\\d+)% Finished");
     }
@@ -77,15 +76,15 @@ public class IOSDataUnpacker {
     /**
      * Checks iOS device
      *
-     * @return True if the device is connected and false if not. 
-     * Reads parameters like DeviceName, ProductName, ProductVersion, etc.
+     * @return True if the device is connected and false if not. Reads
+     * parameters like DeviceName, ProductName, ProductVersion, etc.
      */
     public boolean checkDevice() {
-        outputStream.reset();        
-        executeCommand(new String[]{"ideviceinfo","-s"}, outputStream);
-        
+        outputStream.reset();
+        executeCommand(new String[]{"ideviceinfo", "-s"}, outputStream);
+
         StringBuilder deviceParameters = getDeviceParameters(outputStream.toString());
-        
+
         if (uniqueDeviceID == null || "".equals(uniqueDeviceID)) {
             deviceInfo = outputStream.toString();
             return false;
@@ -93,33 +92,33 @@ public class IOSDataUnpacker {
             deviceInfo = deviceParameters.toString();
             return true;
         }
-    }            
+    }
 
     /**
      * Create iOS backup.
      *
-     * @param backupDirectoryPath The folder where the backup will be created
+     * @param backupDirectoryPath The folder where the backup will be created.
      * @param encrypted True if backup is to be encrypted, false if not.
      * @throws UnpackDataException
      */
     public void createBackup(final String backupDirectoryPath, final boolean encrypted) throws UnpackDataException {
         outputStream.reset();
-        
+
         if ("".equals(uniqueDeviceID) || uniqueDeviceID == null) {
             throw new UnpackDataException("UniqueDeviceID is null or empty!");
         }
-        
+
         File directory = new File(backupDirectoryPath);
         if (!directory.exists()) {
             directory.mkdir();
-            logger.log(Level.INFO, "Created backup directory " + directory.getAbsolutePath());
+            logger.log(Level.INFO, "Creating backup directory " + directory.getAbsolutePath());
         }
-        
+
         processing = true;
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                                
+
                 String[] cmdArray = new String[]{"idevicebackup2", "backup", "--full", backupDirectoryPath};
                 if (encrypted) {
                     executeCommand(new String[]{"idevicebackup2", "backup", "encryption", "on", "1234"}, outputStream);
@@ -133,7 +132,7 @@ public class IOSDataUnpacker {
             }
         });
 
-        thread.start();        
+        thread.start();
     }
 
     /**
@@ -145,9 +144,9 @@ public class IOSDataUnpacker {
      * file if not, to a folder.
      * @throws FileNotFoundException, BackupReadException, InvalidKeyException.
      */
-    public void extractBackup(String backupDirectoryPath, String password, boolean extractToZIP) throws BackupReadException, InvalidKeyException, FileNotFoundException {        
+    public void extractBackup(String backupDirectoryPath, String password, boolean extractToZIP) throws BackupReadException, InvalidKeyException, FileNotFoundException {
         ITunesBackup backup = new ITunesBackup(new File(backupDirectoryPath));
-    
+
         if (backup.manifest.encrypted) {
             backup.manifest.getKeyBag().get().unlock(password);
             backup.decryptDatabase();
@@ -169,9 +168,10 @@ public class IOSDataUnpacker {
         if (!extractDirectory.exists()) {
             extractDirectory.mkdir();
         }
-        
+
         backupExtractPercent = 0;
         processing = true;
+
         List<BackupFile> backupFiles = backup.getAllFiles();
         if (!backupFiles.isEmpty()) {
             if (extractToZIP) {
@@ -183,15 +183,15 @@ public class IOSDataUnpacker {
             logger.log(Level.INFO, "No files in backup");
         }
 
+        backup.cleanUp();
     }
 
-    public void extractBackup(boolean extractToZIP) throws FileNotFoundException, BackupReadException, InvalidKeyException {        
+    public void extractBackup(boolean extractToZIP) throws FileNotFoundException, BackupReadException, InvalidKeyException {
         extractBackup(backupDirectory.getAbsolutePath(), "1234", extractToZIP);
     }
 
     /**
-     * Extracts files from iOS backup
-     * and add to ZIP archive file.
+     * Extracts files from iOS backup and add to ZIP archive file.
      *
      * @param backupFiles List BackupFiles that will be extracted.
      * @param destinationDirectory The folder where ZIP file will be created.
@@ -200,9 +200,10 @@ public class IOSDataUnpacker {
 
         Thread thread = new Thread(new Runnable() {
             @Override
-            public void run() {                
+            public void run() {
                 int count = backupFiles.size();
-                File zipFile = new File(destinationDirectory.getAbsolutePath(), uniqueDeviceID + ".zip");                
+                String relative = "";
+                File zipFile = new File(destinationDirectory.getAbsolutePath(), uniqueDeviceID + ".zip");
 
                 FileOutputStream fileOutputStream = null;
                 try {
@@ -210,12 +211,17 @@ public class IOSDataUnpacker {
                 } catch (FileNotFoundException ex) {
                     Exceptions.printStackTrace(ex);
                 }
-                
+
                 ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
                 int i = 0;
                 for (BackupFile backupFile : backupFiles) {
                     try {
-                        String relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
+
+                        try {
+                            relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
+                        } catch (Exception ex) {
+                            throw new UnpackDataException(ex);
+                        }
 
                         ZipEntry zipEntry;
                         switch (backupFile.getFileType()) {
@@ -236,9 +242,8 @@ public class IOSDataUnpacker {
                                 try {
                                     fileExtractor.addToArchive(zipOutputStream);
                                 } catch (BackupReadException | NotUnlockedException | UnsupportedCryptoException | IOException ex) {
-                                    logger.log(Level.SEVERE, "Can't add backup file " + backupFile.relativePath + " to archive :" + ex);
+                                    logger.log(Level.WARNING, "Can't add backup file " + backupFile.relativePath + " to archive :" + ex);
                                 }
-                                                                
                                 break;
                         }
 
@@ -247,7 +252,10 @@ public class IOSDataUnpacker {
                         backupExtractPercent = (i * 100) / count;
                         i++;
                     } catch (IOException ex) {
-                        logger.log(Level.SEVERE, "Add entry to Zip archive problem: " + ex);
+                        logger.log(Level.SEVERE, "Zip archive output stream problem :" + ex);
+                        Exceptions.printStackTrace(ex);
+                    } catch (UnpackDataException ex) {
+                        logger.log(Level.WARNING, "Illegal characters in the relative path name " + relative + ", not added to archive :" + ex);
                     }
                 }
 
@@ -260,58 +268,72 @@ public class IOSDataUnpacker {
     }
 
     /**
-     * Extracts files from iOS backup
-     * and save in folder on the disk.
+     * Extracts files from iOS backup and save in folder on the disk.
      *
      * @param backupFiles List BackupFiles that will be extracted.
-     * @param destinationDirectory The folder where the BackupFile will be unpacked.
-     */        
+     * @param destinationDirectory The folder where the BackupFile will be
+     * unpacked.
+     */
     private void extractFilesToFolder(final List<BackupFile> backupFiles, final File destinationDirectory) {
-        
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 int count = backupFiles.size();
+                String relative = "";
 
                 int i = 0;
                 for (BackupFile backupFile : backupFiles) {
 
-                    String relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
-                    File destination = new File(destinationDirectory.getAbsolutePath(), relative);                    
-
                     try {
-                        Files.createDirectories(destination.getParentFile().toPath());
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
 
-                    switch (backupFile.getFileType()) {
-                        case SYMBOLIC_LINK:
-                            logger.log(Level.WARNING, "Symbolic link " + backupFile.relativePath + " not save");                            
-                            break;
-                        case DIRECTORY:
-                            if (!destination.exists()) {
-                                try {
-                                    Files.createDirectory(destination.toPath());
-                                } catch (IOException ex) {
-                                    Exceptions.printStackTrace(ex);
+                        try {
+                            relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
+                        } catch (Exception ex) {
+                            throw new UnpackDataException(ex);
+                        }
+
+                        File destination = new File(destinationDirectory.getAbsolutePath(), relative);
+
+                        try {
+                            Files.createDirectories(destination.getParentFile().toPath());
+                        } catch (IOException ex) {
+                            destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(relative));
+                            createDirectories(destination.getParentFile());
+                        }
+
+                        switch (backupFile.getFileType()) {
+                            case SYMBOLIC_LINK:
+                                logger.log(Level.WARNING, "Symbolic link " + backupFile.relativePath + " not save.");
+                                break;
+                            case DIRECTORY:
+                                if (!destination.exists()) {
+                                    try {
+                                        Files.createDirectory(destination.toPath());
+                                    } catch (IOException ex) {
+                                        destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(relative));
+                                        createDirectories(destination);
+                                    }
                                 }
-                            }
-                            break;
-                        case FILE:
-                            if (destination.exists()) {
-                                destination = new File(destination.getAbsolutePath() + "_Id." + System.currentTimeMillis());
-                                logger.log(Level.WARNING, "Duplicate name: " + relative + ", file renamed to " + destination.getName());
-                            }
-                            
-                            FileExtractor fileExtractor = new FileExtractor(backupFile);
+                                break;
+                            case FILE:
+                                if (destination.exists()) {
+                                    destination = new File(destination.getAbsolutePath() + "_Id." + System.currentTimeMillis());
+                                    logger.log(Level.WARNING, "Duplicate name: " + relative + ", file renamed to " + destination.getName());
+                                }
 
-                            try {
-                                fileExtractor.extractToFile(destination);
-                            } catch (BackupReadException | NotUnlockedException | UnsupportedCryptoException | IOException ex) {
-                                logger.log(Level.SEVERE, "Can't extract backup file " + backupFile.relativePath +" :" + ex);
-                            }
-                            break;
+                                FileExtractor fileExtractor = new FileExtractor(backupFile);
+
+                                try {
+                                    fileExtractor.extractToFile(destination);
+                                } catch (BackupReadException | NotUnlockedException | UnsupportedCryptoException | IOException ex) {
+                                    logger.log(Level.SEVERE, "Can't extract backup file " + relative + " :" + ex);
+                                }
+                                break;
+                        }
+
+                    } catch (UnpackDataException ex) {
+                        logger.log(Level.WARNING, "Illegal characters in the relative path name " + relative + ", not extracted: " + ex);
                     }
 
                     backupExtractPercent = (i * 100 / count);
@@ -323,21 +345,21 @@ public class IOSDataUnpacker {
 
         thread.start();
     }
-             
+
     /**
      * @return Backup creation percentage.
      */
     public int getBackupCreatePercent() {
         int percent;
-                
+
         String textLog = outputStream.toString();
         Matcher matcher = pattern.matcher(textLog);
-        
+
         String lastFinishedLine = null;
         while (matcher.find()) {
             lastFinishedLine = matcher.group(1);
         }
-        
+
         try {
             percent = Integer.valueOf(lastFinishedLine);
         } catch (NumberFormatException e) {
@@ -346,14 +368,14 @@ public class IOSDataUnpacker {
 
         return percent;
     }
-    
+
     /**
-     * @return iOS Device parameters string eg. DeviceName, ProductName, 
+     * @return iOS Device parameters string eg. DeviceName, ProductName,
      * ProductVersion, UniqueDeviceID.
      */
     private StringBuilder getDeviceParameters(String text) {
         StringBuilder deviceParameters = new StringBuilder();
-       
+
         deviceName = getParameterValue("DeviceName: ", text);
         deviceParameters.append("DeviceName: ").append(deviceName).append("\n");
         deviceProductName = getParameterValue("ProductName: ", text);
@@ -365,22 +387,21 @@ public class IOSDataUnpacker {
 
         return deviceParameters;
     }
-       
+
     /**
-     * @return iOS device parameter form text result
-     * of the command operation.
-     */    
-    private String getParameterValue(String parameterName, String text){         
+     * @return iOS device parameter form text result of the command operation.
+     */
+    private String getParameterValue(String parameterName, String text) {
         String newText = text.replace("\r", "");
         int beginIndex = newText.indexOf(parameterName);
-        if(beginIndex != -1){
+        if (beginIndex != -1) {
             beginIndex += parameterName.length();
             return newText.substring(beginIndex, newText.indexOf("\n", beginIndex));
-        }                            
-        
-        return null;        
+        }
+
+        return null;
     }
-    
+
     /**
      * Executes shell commands.
      *
@@ -388,10 +409,10 @@ public class IOSDataUnpacker {
      * @param out Result of the command operation.
      */
     private void executeCommand(String[] cmdArray, OutputStream out) {
-        if(filesCommandPath != null){
+        if (filesCommandPath != null) {
             cmdArray[0] = filesCommandPath.getAbsolutePath() + File.separator + cmdArray[0];
-        }       
-        
+        }
+
         Process process;
         try {
             process = Runtime.getRuntime().exec(cmdArray);
@@ -403,7 +424,7 @@ public class IOSDataUnpacker {
 
         StreamTransfer outReader = new StreamTransfer(process.getInputStream(), out);
         outReader.start();
-        
+
         try {
             if (out != null) {
                 process.waitFor();
@@ -415,12 +436,55 @@ public class IOSDataUnpacker {
     }
 
     /**
+     * Changes illegal directory path name.
+     *
+     * @param destinationPath The name of the path to be changed.
+     */
+    private String changingIllegalDirectoryName(String destinationPath) {
+        String[] names = {"CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6",
+            "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
+        String newDestinationPath = destinationPath;
+        String dirName = null;
+
+        for (String name : names) {
+            if (destinationPath.toUpperCase().contains(File.separator + name + File.separator)) {
+                int idx = -1;
+                while ((idx = destinationPath.toUpperCase().indexOf(File.separator + name + File.separator, idx + 1)) != -1) {
+                    dirName = destinationPath.substring(idx, destinationPath.indexOf(File.separator, idx + 1));
+                    newDestinationPath = destinationPath.substring(0, idx) + dirName + "_(rename)" + destinationPath.substring(idx + dirName.length());
+                    destinationPath = newDestinationPath;
+                }
+                logger.log(Level.WARNING, "Illegal directory name " + dirName + " in path, changing to " + newDestinationPath);
+            }
+            if (destinationPath.toUpperCase().endsWith(File.separator + name)) {
+                newDestinationPath = destinationPath + "_(rename)";
+                logger.log(Level.WARNING, "Illegal path name " + destinationPath + ", changing to " + newDestinationPath);
+            }
+        }
+        return newDestinationPath;
+    }
+
+    /**
+     * Creates directories based on path.
+     *
+     * @param path The path from which directories are created.
+     */
+    void createDirectories(File path) {
+        try {
+            Files.createDirectories(path.toPath());
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Create directories problem " + path.getAbsolutePath() + " :" + ex);
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    /**
      * @return True if extraction is in progress, false if completed.
-     */    
+     */
     public boolean isProcessing() {
         return processing;
     }
-    
+
     /**
      * @return Backup extract percent.
      */
@@ -469,7 +533,7 @@ public class IOSDataUnpacker {
         File filePath = null;
         if (versionOS.contains("windows")) {
             filePath = InstalledFileLocator.getDefault().locate("win", IOSDataUnpacker.class.getPackage().getName(), false);
-        } 
-        return filePath;                
+        }
+        return filePath;
     }
 }

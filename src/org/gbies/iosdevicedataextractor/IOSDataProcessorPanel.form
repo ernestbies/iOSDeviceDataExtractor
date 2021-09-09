@@ -98,7 +98,7 @@
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jRadioButtonLiveExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jRadioButtonLiveExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -108,7 +108,7 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxChangeDefaultFolder">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxChangeDefaultFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxChangeDefaultFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -119,14 +119,14 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jTextFieldDefaultFolderExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jTextFieldDefaultFolderExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonFolderExtraction">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jButtonFolderExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jButtonFolderExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -137,7 +137,7 @@
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxBackupEncrypted.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxBackupEncrypted.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -202,7 +202,7 @@
         <Component class="javax.swing.JRadioButton" name="jRadioButtonBackupExtraction">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jRadioButtonBackupExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jRadioButtonBackupExtraction.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -212,14 +212,14 @@
         <Component class="javax.swing.JTextField" name="jTextFieldBackupFolder">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jTextFieldBackupFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jTextFieldBackupFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonBackupFolder">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jButtonBackupFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jButtonBackupFolder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -229,21 +229,21 @@
         <Component class="javax.swing.JLabel" name="jLabelPassword">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jLabelPassword.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jLabelPassword.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JPasswordField" name="jPasswordField">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jPasswordField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jPasswordField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabelDirectory">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jLabelDirectory.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jLabelDirectory.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -252,7 +252,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxExtractToZip">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gbies/iosdeviceextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxExtractToZip.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gbies/iosdevicedataextractor/Bundle.properties" key="IOSDataProcessorPanel.jCheckBoxExtractToZip.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

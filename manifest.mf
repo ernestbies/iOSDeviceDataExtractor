@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
-OpenIDE-Module: org.gbies.iosdeviceextractor
-OpenIDE-Module-Localizing-Bundle: org/gbies/iosdeviceextractor/Bundle.properties
+OpenIDE-Module: org.gbies.iosdevicedataextractor
+OpenIDE-Module-Localizing-Bundle: org/gbies/iosdevicedataextractor/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 
