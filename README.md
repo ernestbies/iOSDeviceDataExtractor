@@ -24,7 +24,7 @@ iOS Device Data Extractor is an Autopsy module that creates an encrypted or non-
 
 ## Setup
 Installation:
-1. Download file org-gbies-iosdevicedataextractor.nbm from https://github.com/ernestbies/iOSDeviceDataExtractor/blob/master/build.
+1. Download file **org-gbies-iosdevicedataextractor.nbm** from https://github.com/ernestbies/iOSDeviceDataExtractor/blob/master/build.
 2. Run Autopsy.
 3. Go to Tools -> Plugins -> Downloaded -> Add Plugins.
 4. Choose file org-gbies-iosdevicedataextractor.nbm.
@@ -39,15 +39,22 @@ Uninstallation:
 5. Follow the steps, restart Autopsy.
 
 ## Usage
+Backing up your device:
 1. Connect your iPhone or iPad to your computer.
-2. Run the iOS Device Data Extractor module.
-3. Choose whether you want to back up your device or extract files from a backup.
-4. For an encrypted backup, enter the password.
-5. You can extract the files from the backup to a ZIP archive to use for example iLEAPP module. 
-6. Case Study: https://youtu.be/CrBmTBpnK5c
+2. Run the iOS Device Data Extractor module in Autopsy.
+3. Select whether the backup should be encrypted
+3. Select the directory where you want to back up your device.
 
-For use in Linux install libimobiledevice form https://libimobiledevice.org/#get-started
-if there is a problem with iOS 14 devices, you can use the script from 
+Extracting files from iOS backup:
+1. Run the iOS Device Data Extractor module in Autopsy.
+2. Select the directory containing the iOS backup.
+3. For an encrypted backup, enter the password.
+4. Select if you want to unpack the files into a ZIP archive, for example to use the iLEAPP module.
+
+Case Study: https://youtu.be/CrBmTBpnK5c
+
+For use in Linux install **libimobiledevice** form https://libimobiledevice.org/#get-started
+**Attention** If there is a problem with iOS 14 devices, you can use the script from 
 https://askubuntu.com/questions/1297635/ubuntu-libimobiledevice-ios-14-focal-20-04
 
 ## Inspiration

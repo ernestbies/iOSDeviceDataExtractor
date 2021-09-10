@@ -202,7 +202,7 @@ public class IOSDataUnpacker {
             @Override
             public void run() {
                 int count = backupFiles.size();
-                String relative = "";
+                String path = "";
                 File zipFile = new File(destinationDirectory.getAbsolutePath(), uniqueDeviceID + ".zip");
 
                 FileOutputStream fileOutputStream = null;
@@ -218,7 +218,7 @@ public class IOSDataUnpacker {
                     try {
 
                         try {
-                            relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
+                            path = Paths.get(backupFile.domain, backupFile.relativePath).toString();
                         } catch (Exception ex) {
                             throw new UnpackDataException(ex);
                         }
@@ -226,15 +226,15 @@ public class IOSDataUnpacker {
                         ZipEntry zipEntry;
                         switch (backupFile.getFileType()) {
                             case SYMBOLIC_LINK:
-                                zipEntry = new ZipEntry(relative);
+                                zipEntry = new ZipEntry(path);
                                 zipOutputStream.putNextEntry(zipEntry);
                                 break;
                             case DIRECTORY:
-                                zipEntry = new ZipEntry(relative + "/");
+                                zipEntry = new ZipEntry(path + "/");
                                 zipOutputStream.putNextEntry(zipEntry);
                                 break;
                             case FILE:
-                                zipEntry = new ZipEntry(relative);
+                                zipEntry = new ZipEntry(path);
                                 zipOutputStream.putNextEntry(zipEntry);
 
                                 FileExtractor fileExtractor = new FileExtractor(backupFile);
@@ -255,7 +255,7 @@ public class IOSDataUnpacker {
                         logger.log(Level.SEVERE, "Zip archive output stream problem :" + ex);
                         Exceptions.printStackTrace(ex);
                     } catch (UnpackDataException ex) {
-                        logger.log(Level.WARNING, "Illegal characters in the relative path name " + relative + ", not added to archive :" + ex);
+                        logger.log(Level.WARNING, "Illegal characters in the path name " + path + ", not added to archive :" + ex);
                     }
                 }
 
@@ -280,7 +280,7 @@ public class IOSDataUnpacker {
             @Override
             public void run() {
                 int count = backupFiles.size();
-                String relative = "";
+                String path = "";
 
                 int i = 0;
                 for (BackupFile backupFile : backupFiles) {
@@ -288,17 +288,17 @@ public class IOSDataUnpacker {
                     try {
 
                         try {
-                            relative = Paths.get(backupFile.domain, backupFile.relativePath).toString();
+                            path = Paths.get(backupFile.domain, backupFile.relativePath).toString();
                         } catch (Exception ex) {
                             throw new UnpackDataException(ex);
                         }
 
-                        File destination = new File(destinationDirectory.getAbsolutePath(), relative);
+                        File destination = new File(destinationDirectory.getAbsolutePath(), path);
 
                         try {
                             Files.createDirectories(destination.getParentFile().toPath());
                         } catch (IOException ex) {
-                            destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(relative));
+                            destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(path));
                             createDirectories(destination.getParentFile());
                         }
 
@@ -311,7 +311,7 @@ public class IOSDataUnpacker {
                                     try {
                                         Files.createDirectory(destination.toPath());
                                     } catch (IOException ex) {
-                                        destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(relative));
+                                        destination = new File(destinationDirectory.getAbsolutePath(), changingIllegalDirectoryName(path));
                                         createDirectories(destination);
                                     }
                                 }
@@ -319,7 +319,7 @@ public class IOSDataUnpacker {
                             case FILE:
                                 if (destination.exists()) {
                                     destination = new File(destination.getAbsolutePath() + "_Id." + System.currentTimeMillis());
-                                    logger.log(Level.WARNING, "Duplicate name: " + relative + ", file renamed to " + destination.getName());
+                                    logger.log(Level.WARNING, "Duplicate name: " + path + ", file renamed to " + destination.getName());
                                 }
 
                                 FileExtractor fileExtractor = new FileExtractor(backupFile);
@@ -327,13 +327,13 @@ public class IOSDataUnpacker {
                                 try {
                                     fileExtractor.extractToFile(destination);
                                 } catch (BackupReadException | NotUnlockedException | UnsupportedCryptoException | IOException ex) {
-                                    logger.log(Level.SEVERE, "Can't extract backup file " + relative + " :" + ex);
+                                    logger.log(Level.SEVERE, "Can't extract backup file " + path + " :" + ex);
                                 }
                                 break;
                         }
 
                     } catch (UnpackDataException ex) {
-                        logger.log(Level.WARNING, "Illegal characters in the relative path name " + relative + ", not extracted: " + ex);
+                        logger.log(Level.WARNING, "Illegal characters in the path name " + path + ", not extracted: " + ex);
                     }
 
                     backupExtractPercent = (i * 100 / count);
