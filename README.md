@@ -54,7 +54,7 @@ Extracting files from iOS backup:
 Case Study: https://youtu.be/CrBmTBpnK5c
 
 For use in Linux install **libimobiledevice** form https://libimobiledevice.org/#get-started
-**Attention** If there is a problem with iOS 14 devices, you can use the script from 
+. If there is a problem with iOS 14 devices, you can use the script from 
 https://askubuntu.com/questions/1297635/ubuntu-libimobiledevice-ios-14-focal-20-04
 
 ## Inspiration
