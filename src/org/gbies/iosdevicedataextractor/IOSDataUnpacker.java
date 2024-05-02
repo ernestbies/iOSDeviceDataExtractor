@@ -111,7 +111,7 @@ public class IOSDataUnpacker {
         File directory = new File(backupDirectoryPath);
         if (!directory.exists()) {
             directory.mkdir();
-            logger.log(Level.INFO, "Creating backup directory " + directory.getAbsolutePath());
+            logger.log(Level.INFO, "Creating backup directory {0}", directory.getAbsolutePath());
         }
 
         processing = true;
@@ -146,10 +146,12 @@ public class IOSDataUnpacker {
      */
     public void extractBackup(String backupDirectoryPath, String password, boolean extractToZIP) throws BackupReadException, InvalidKeyException, FileNotFoundException {
         ITunesBackup backup = new ITunesBackup(new File(backupDirectoryPath));
-
+        String cryptedBackupInfo = "Unencrypted ";
+        
         if (backup.manifest.encrypted) {
             backup.manifest.getKeyBag().get().unlock(password);
             backup.decryptDatabase();
+            cryptedBackupInfo = "Encrypted ";
         }
 
         deviceName = backup.manifest.deviceName;
@@ -157,10 +159,10 @@ public class IOSDataUnpacker {
         uniqueDeviceID = backup.manifest.uniqueDeviceID;
 
         StringBuilder information = new StringBuilder();
-        information.append("DeviceName: ").append(deviceName).append("\n");
-        information.append("ProductVersion: ").append(deviceProductVersion).append("\n");
-        information.append("UniqueDeviceID: ").append(uniqueDeviceID).append("\n");
-        information.append("Backup encrypted: ").append(backup.manifest.encrypted).append("\n");
+        information.append("Device Name: ").append(deviceName).append("\n");
+        information.append("Product Version: ").append(deviceProductVersion).append("\n");
+        information.append("Unique Device ID: ").append(uniqueDeviceID).append("\n");        
+        information.append(cryptedBackupInfo);
         backupInfo = information.toString();
 
         extractDirectory = new File(backup.directory.getParent(), uniqueDeviceID + "_extract_" + System.currentTimeMillis());
@@ -377,13 +379,12 @@ public class IOSDataUnpacker {
         StringBuilder deviceParameters = new StringBuilder();
 
         deviceName = getParameterValue("DeviceName: ", text);
-        deviceParameters.append("DeviceName: ").append(deviceName).append("\n");
         deviceProductName = getParameterValue("ProductName: ", text);
-        deviceParameters.append("ProductName: ").append(deviceProductName).append("\n");
         deviceProductVersion = getParameterValue("ProductVersion: ", text);
-        deviceParameters.append("ProductVersion: ").append(deviceProductVersion).append("\n");
         uniqueDeviceID = getParameterValue("UniqueDeviceID: ", text);
-        deviceParameters.append("UniqueDeviceID: ").append(uniqueDeviceID).append("\n");
+        deviceParameters.append("Device Name: ").append(deviceName).append("\n");                
+        deviceParameters.append("Product Name: ").append(deviceProductName).append(" ").append(deviceProductVersion).append("\n");        
+        deviceParameters.append("Unique Device ID: ").append(uniqueDeviceID).append("\n");
 
         return deviceParameters;
     }

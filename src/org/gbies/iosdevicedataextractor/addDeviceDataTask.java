@@ -76,7 +76,7 @@ public class addDeviceDataTask implements Runnable {
     "addDeviceDataTask.creating.encrypted.backup=Creating encrypted backup...",
     "addDeviceDataTask.creating.unencrypted.backup=Creating unencrypted backup...",
     "addDeviceDataTask.reading.backup.information=Reading information from backup...",
-    "addDeviceDataTask.extracting.backup=Extracting backup...",
+    "addDeviceDataTask.extracting.backup=backup is extracting...",
     "addDeviceDataTask.connect.problem=iOS device connection problem, ",
     "addDeviceDataTask.manifest.file.not.created=Backup problem (Manifest.db file not found), ",
     "addDeviceDataTask.error.add.files.dataSources=Error add files to new DataSources",
@@ -91,7 +91,7 @@ public class addDeviceDataTask implements Runnable {
             
             if (iosDataUnpacker.checkDevice()) {
                                
-                logger.log(Level.INFO, "Connecting device... " + iosDataUnpacker.getDeviceInfo());
+                logger.log(Level.INFO, "Connecting device... {0}", iosDataUnpacker.getDeviceInfo());
                 
                 try {
                     iosDataUnpacker.createBackup(panelSettings.getExtractDirectoryName(), panelSettings.isBackupEncrypted());
@@ -106,9 +106,9 @@ public class addDeviceDataTask implements Runnable {
                 deviceInfo.append(iosDataUnpacker.getDeviceInfo()).append(backupType);
                 logger.log(Level.INFO, backupType);
                 progressMonitor.setProgressText(deviceInfo.toString());
-                progressMonitor.setIndeterminate(false);
-                progressMonitor.setProgressMax(100);
+                progressMonitor.setIndeterminate(true);
                 
+                boolean showProgress = false;
                 int percent;
                 do {
                     try {
@@ -117,8 +117,18 @@ public class addDeviceDataTask implements Runnable {
                         Exceptions.printStackTrace(ex);
                     }   
                     
-                    percent = iosDataUnpacker.getBackupCreatePercent();                    
-                    progressMonitor.setProgress(percent);                    
+                    percent = iosDataUnpacker.getBackupCreatePercent();
+                    if(!showProgress && percent > 0){
+                        progressMonitor.setIndeterminate(false);
+                        progressMonitor.setProgressMax(100);
+                        String info = deviceInfo.toString();
+                        deviceInfo.replace(info.lastIndexOf("\n")+1, info.length(), "Coping files...");
+                        progressMonitor.setProgressText(deviceInfo.toString());
+                        showProgress = true;
+                    }
+                    if(showProgress){
+                        progressMonitor.setProgress(percent);
+                    }                    
                 } while (iosDataUnpacker.isProcessing());
                 logger.log(Level.INFO, iosDataUnpacker.getOutputStream());
                 
@@ -133,7 +143,7 @@ public class addDeviceDataTask implements Runnable {
              
             } else {
                 errorList.add(Bundle.addDeviceDataTask_connect_problem());
-                logger.log(Level.SEVERE, Bundle.addDeviceDataTask_connect_problem() + iosDataUnpacker.getDeviceInfo());
+                logger.log(Level.SEVERE, "{0}{1}", new Object[]{Bundle.addDeviceDataTask_connect_problem(), iosDataUnpacker.getDeviceInfo()});
                 hasCriticalError = true;
             }
 
