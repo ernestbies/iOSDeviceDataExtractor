@@ -120,10 +120,12 @@ public class IOSDataUnpacker {
             public void run() {
 
                 String[] cmdArray = new String[]{"idevicebackup2", "backup", "--full", backupDirectoryPath};
-                if (encrypted) {
-                    executeCommand(new String[]{"idevicebackup2", "backup", "encryption", "on", "1234"}, outputStream);
-                    executeCommand(cmdArray, outputStream);
-                    executeCommand(new String[]{"idevicebackup2", "backup", "encryption", "off", "1234"}, outputStream);
+                if (encrypted) {                    
+                    executeCommand(new String[]{"idevicebackup2", "encryption", "on", "1234"}, outputStream);
+                    if(!outputStream.toString().contains("ERROR:")){
+                        executeCommand(cmdArray, outputStream);                        
+                    }   
+                    executeCommand(new String[]{"idevicebackup2", "encryption", "off", "1234"}, outputStream);
                 } else {
                     executeCommand(cmdArray, outputStream);
                 }
@@ -244,7 +246,7 @@ public class IOSDataUnpacker {
                                 try {
                                     fileExtractor.addToArchive(zipOutputStream);
                                 } catch (BackupReadException | NotUnlockedException | UnsupportedCryptoException | IOException ex) {
-                                    logger.log(Level.WARNING, "Can't add backup file " + backupFile.relativePath + " to archive :" + ex);
+                                    logger.log(Level.WARNING, "Can't add backup file " + backupFile.relativePath + " to archive: " + ex);
                                 }
                                 break;
                         }
@@ -254,10 +256,10 @@ public class IOSDataUnpacker {
                         backupExtractPercent = (i * 100) / count;
                         i++;
                     } catch (IOException ex) {
-                        logger.log(Level.SEVERE, "Zip archive output stream problem :" + ex);
+                        logger.log(Level.SEVERE, "Zip archive output stream problem:" + ex);
                         Exceptions.printStackTrace(ex);
                     } catch (UnpackDataException ex) {
-                        logger.log(Level.WARNING, "Illegal characters in the path name " + path + ", not added to archive :" + ex);
+                        logger.log(Level.WARNING, "Illegal characters in the path name " + path + ", not added to archive: " + ex);
                     }
                 }
 
@@ -534,6 +536,7 @@ public class IOSDataUnpacker {
         File filePath = null;
         if (versionOS.contains("windows")) {
             filePath = InstalledFileLocator.getDefault().locate("win", IOSDataUnpacker.class.getPackage().getName(), false);
+            logger.log(Level.INFO, "File path for libimobiledevice: " + filePath.getAbsolutePath());
         }
         return filePath;
     }

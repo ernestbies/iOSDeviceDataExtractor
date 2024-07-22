@@ -77,9 +77,9 @@ public class addDeviceDataTask implements Runnable {
     "addDeviceDataTask.creating.unencrypted.backup=Creating unencrypted backup...",
     "addDeviceDataTask.reading.backup.information=Reading information from backup...",
     "addDeviceDataTask.extracting.backup=backup is extracting...",
-    "addDeviceDataTask.connect.problem=iOS device connection problem, ",
-    "addDeviceDataTask.manifest.file.not.created=Backup problem (Manifest.db file not found), ",
-    "addDeviceDataTask.error.add.files.dataSources=Error add files to new DataSources",
+    "addDeviceDataTask.connect.problem=iOS device connection problem! ",
+    "addDeviceDataTask.manifest.file.not.created=Create backup problem (Manifest.db file not found)! ",
+    "addDeviceDataTask.error.add.files.dataSources=Error add files to new DataSources!",
     "addDeviceDataTask.error.extract.backup=Incorrect password, backup decryption problem or backup directory not found!"})
     @Override
     public void run() {
@@ -122,7 +122,7 @@ public class addDeviceDataTask implements Runnable {
                         progressMonitor.setIndeterminate(false);
                         progressMonitor.setProgressMax(100);
                         String info = deviceInfo.toString();
-                        deviceInfo.replace(info.lastIndexOf("\n")+1, info.length(), "Coping files...");
+                        deviceInfo.replace(info.lastIndexOf("\n")+1, info.length(), "Copying backup files...");
                         progressMonitor.setProgressText(deviceInfo.toString());
                         showProgress = true;
                     }
@@ -130,19 +130,22 @@ public class addDeviceDataTask implements Runnable {
                         progressMonitor.setProgress(percent);
                     }                    
                 } while (iosDataUnpacker.isProcessing());
-                logger.log(Level.INFO, iosDataUnpacker.getOutputStream());
+                logger.log(Level.INFO, iosDataUnpacker.getOutputStream());                
                 
                 File manifestDBFile = new File(iosDataUnpacker.getBackupDirectory(), "Manifest.db");
                 File manifestPListFile = new File(iosDataUnpacker.getBackupDirectory(), "Manifest.plist");
                 
                 if(!manifestPListFile.exists() || !manifestDBFile.exists()){
                     errorList.add(Bundle.addDeviceDataTask_manifest_file_not_created() + iosDataUnpacker.getOutputStream());
+                    if(iosDataUnpacker.getOutputStream().toString().contains("ERROR: Backup encryption is already enabled")){
+                        errorList.add(showMessageResetBackupPassword());
+                    }
                     logger.log(Level.SEVERE, Bundle.addDeviceDataTask_manifest_file_not_created());
                     hasCriticalError = true;
                 }
              
             } else {
-                errorList.add(Bundle.addDeviceDataTask_connect_problem());
+                errorList.add(Bundle.addDeviceDataTask_connect_problem() + iosDataUnpacker.getDeviceInfo());
                 logger.log(Level.SEVERE, "{0}{1}", new Object[]{Bundle.addDeviceDataTask_connect_problem(), iosDataUnpacker.getDeviceInfo()});
                 hasCriticalError = true;
             }
@@ -203,6 +206,17 @@ public class addDeviceDataTask implements Runnable {
         }
                 
         doCallBack();
+    }
+    
+    private String showMessageResetBackupPassword(){
+        StringBuilder message = new StringBuilder();
+        message.append("The backup has a password! To encrypt the backup you need to reset the old password:").append("\n");
+        message.append("1. On your device, go to Settings > General > Transfer or Reset [Device], then tap Reset.").append("\n");
+        message.append("2. Tap Reset All Settings and enter your device passcode.").append("\n");
+        message.append("3. Tap Reset All Settings.").append("\n");
+        message.append("4. Follow the steps to reset your settings. This won't affect your user data or passwords, but it will reset settings like display brightness, Home Screen layout, and wallpaper. It also removes your encrypted backup password.").append("\n");
+        
+        return message.toString();
     }
 
     private void doCallBack() {
