@@ -54,6 +54,11 @@ public class StreamTransfer extends Thread {
                 if (count > 0 && out != null) {
                     out.write(buffer, 0, count);
                 }
+                
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();

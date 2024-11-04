@@ -102,8 +102,7 @@ public class IOSDataUnpacker {
      * @throws UnpackDataException
      */
     public void createBackup(final String backupDirectoryPath, final boolean encrypted) throws UnpackDataException {
-        outputStream.reset();
-
+        
         if ("".equals(uniqueDeviceID) || uniqueDeviceID == null) {
             throw new UnpackDataException("UniqueDeviceID is null or empty!");
         }
@@ -112,19 +111,22 @@ public class IOSDataUnpacker {
         if (!directory.exists()) {
             directory.mkdir();
             logger.log(Level.INFO, "Creating backup directory {0}", directory.getAbsolutePath());
+            executeCommand(new String[]{"idevicebackup2", "-v"}, outputStream);
+            logger.log(Level.INFO, "Idevicebackup2 version {0}", outputStream.toString());                    
         }
 
+        outputStream.reset();
         processing = true;
         Thread thread = new Thread(new Runnable() {
             @Override
-            public void run() {
-
+            public void run() {                
+                
                 String[] cmdArray = new String[]{"idevicebackup2", "backup", "--full", backupDirectoryPath};
-                if (encrypted) {                    
+                if (encrypted) {                     
                     executeCommand(new String[]{"idevicebackup2", "encryption", "on", "1234"}, outputStream);
-                    if(!outputStream.toString().contains("ERROR:")){
-                        executeCommand(cmdArray, outputStream);                        
-                    }   
+                    if (!outputStream.toString().contains("ERROR:")) {
+                        executeCommand(cmdArray, outputStream);
+                    }
                     executeCommand(new String[]{"idevicebackup2", "encryption", "off", "1234"}, outputStream);
                 } else {
                     executeCommand(cmdArray, outputStream);
@@ -410,15 +412,16 @@ public class IOSDataUnpacker {
      *
      * @param cmdArray The command array string to be executed.
      * @param out Result of the command operation.
-     */
+     */    
     private void executeCommand(String[] cmdArray, OutputStream out) {
         if (filesCommandPath != null) {
             cmdArray[0] = filesCommandPath.getAbsolutePath() + File.separator + cmdArray[0];
         }
 
+        ProcessBuilder builder = new ProcessBuilder(cmdArray);
         Process process;
         try {
-            process = Runtime.getRuntime().exec(cmdArray);
+            process = builder.start();
         } catch (IOException ex) {
             processing = false;
             ex.printStackTrace();
@@ -437,7 +440,7 @@ public class IOSDataUnpacker {
             Thread.currentThread().interrupt();
         }
     }
-
+   
     /**
      * Changes illegal directory path name.
      *
