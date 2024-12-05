@@ -62,6 +62,7 @@ public class IOSDataUnpacker {
     private File extractDirectory;
     private int backupExtractPercent;
     private final Pattern pattern;
+    private final int WAIT_DEVICE_TIME = 10000;
 
     /**
      * Main constructor.
@@ -110,9 +111,7 @@ public class IOSDataUnpacker {
         File directory = new File(backupDirectoryPath);
         if (!directory.exists()) {
             directory.mkdir();
-            logger.log(Level.INFO, "Creating backup directory {0}", directory.getAbsolutePath());
-            executeCommand(new String[]{"idevicebackup2", "-v"}, outputStream);
-            logger.log(Level.INFO, "Idevicebackup2 version {0}", outputStream.toString());                    
+            logger.log(Level.INFO, "Creating backup directory {0}", directory.getAbsolutePath());            
         }
 
         outputStream.reset();
@@ -125,6 +124,11 @@ public class IOSDataUnpacker {
                 if (encrypted) {                     
                     executeCommand(new String[]{"idevicebackup2", "encryption", "on", "1234"}, outputStream);
                     if (!outputStream.toString().contains("ERROR:")) {
+                        try {
+                            Thread.sleep(WAIT_DEVICE_TIME);
+                        } catch (InterruptedException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                         executeCommand(cmdArray, outputStream);
                     }
                     executeCommand(new String[]{"idevicebackup2", "encryption", "off", "1234"}, outputStream);
@@ -498,7 +502,7 @@ public class IOSDataUnpacker {
         return backupExtractPercent;
     }
 
-    public String getOutputStream() {
+    public String getOutputStreamString() {
         return outputStream.toString();
     }
 

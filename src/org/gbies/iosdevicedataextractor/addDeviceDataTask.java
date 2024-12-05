@@ -89,21 +89,22 @@ public class addDeviceDataTask implements Runnable {
         
         if (panelSettings.isLiveExtraction()) {
             
-            if (iosDataUnpacker.checkDevice()) {
-                               
-                logger.log(Level.INFO, "Connecting device... {0}", iosDataUnpacker.getDeviceInfo());
+            if (iosDataUnpacker.checkDevice()) {                
+                logger.log(Level.INFO, "Connecting device... {0}", iosDataUnpacker.getOutputStreamString());
                 
                 try {
                     iosDataUnpacker.createBackup(panelSettings.getExtractDirectoryName(), panelSettings.isBackupEncrypted());
                 } catch (UnpackDataException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+                
                 String backupType = Bundle.addDeviceDataTask_creating_encrypted_backup();
                 if(!panelSettings.isBackupEncrypted()){
                     backupType = Bundle.addDeviceDataTask_creating_unencrypted_backup();
                 } 
                 
-                deviceInfo.append(iosDataUnpacker.getDeviceInfo()).append(backupType);
+                String iosDeviceInfo = iosDataUnpacker.getDeviceInfo();
+                deviceInfo.append(iosDeviceInfo).append(backupType);
                 logger.log(Level.INFO, backupType);
                 progressMonitor.setProgressText(deviceInfo.toString());
                 progressMonitor.setIndeterminate(true);
@@ -112,7 +113,7 @@ public class addDeviceDataTask implements Runnable {
                 int percent;
                 do {
                     try {
-                        Thread.sleep(250);
+                        Thread.sleep(500);
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
                     }   
@@ -130,14 +131,14 @@ public class addDeviceDataTask implements Runnable {
                         progressMonitor.setProgress(percent);
                     }                    
                 } while (iosDataUnpacker.isProcessing());
-                logger.log(Level.INFO, iosDataUnpacker.getOutputStream());                
+                logger.log(Level.INFO, iosDataUnpacker.getOutputStreamString());                
                 
                 File manifestDBFile = new File(iosDataUnpacker.getBackupDirectory(), "Manifest.db");
                 File manifestPListFile = new File(iosDataUnpacker.getBackupDirectory(), "Manifest.plist");
                 
                 if(!manifestPListFile.exists() || !manifestDBFile.exists()){
-                    errorList.add(Bundle.addDeviceDataTask_manifest_file_not_created() + iosDataUnpacker.getOutputStream());
-                    if(iosDataUnpacker.getOutputStream().toString().contains("ERROR: Backup encryption is already enabled")){
+                    errorList.add(Bundle.addDeviceDataTask_manifest_file_not_created() + iosDataUnpacker.getOutputStreamString());
+                    if(iosDataUnpacker.getOutputStreamString().contains("ERROR: Backup encryption is already enabled")){
                         errorList.add(showMessageResetBackupPassword());
                     }
                     logger.log(Level.SEVERE, Bundle.addDeviceDataTask_manifest_file_not_created());
