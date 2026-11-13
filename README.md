@@ -61,4 +61,6 @@ https://askubuntu.com/questions/1297635/ubuntu-libimobiledevice-ios-14-focal-20-
 Project based on https://github.com/MaxiHuHe04/iTunes-Backup-Explorer
 
 ## Contact
-Created by Grzegorz Bieś [g.bies@poczta.fm], Ernest Bieś [ernestbies@gmail.com]
+Created by:
+- Grzegorz Bieś
+- Ernest Bieś
